@@ -1,28 +1,24 @@
-import React, {Component } from 'react';
-import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBMask, MDBRow, MDBCol, MDBBtn,   MDBView, MDBContainer, MDBFormInline } from "mdbreact";
+import React, {useState} from 'react';
+import {MDBMask, MDBRow, MDBCol, MDBBtn, MDBView, MDBContainer} from "mdbreact";
 
-export default class Dashboard extends Component{
-    state = {
-        collapsed: false
+const Dashboard = props => {
+    const [collapsed, setCollapsed] = useState(false);
+
+    const handleToggleClick = () => {
+        setCollapsed(!collapsed);
     };
 
-    handleTogglerClick = () => {
-        this.setState({
-            collapsed: !this.state.collapsed
-        });
-    };
+    const overlay = (
+        <div
+            id="sidenav-overlay"
+            style={{backgroundColor: "transparent"}}
+            onClick={handleToggleClick}
+        />
+    );
 
-    render() {
-        const overlay = (
-            <div
-                id="sidenav-overlay"
-                style={{ backgroundColor: "transparent" }}
-                onClick={this.handleTogglerClick}
-            />
-        );
-        return (
-            <div id="apppage">
-                    <div>
+    return (
+        <div id="app-page">
+            <div>
                 <MDBView>
                     <MDBMask className=" mt-5 pt-5 d-flex justify-content-center align-items-center gradient">
                         <MDBContainer>
@@ -31,7 +27,7 @@ export default class Dashboard extends Component{
                                     <h1 className="h1-responsive font-weight-bold mt-sm-5">
                                         Make purchases with our app{" "}
                                     </h1>
-                                    <hr className="hr-light" />
+                                    <hr className="hr-light"/>
                                     <h6 className="mb-4">
                                         Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                                         Rem repellendus quasi fuga nesciunt dolorum nulla magnam
@@ -70,7 +66,9 @@ export default class Dashboard extends Component{
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer>
-                    </div></div>
-        );
-    }
+            </div>
+        </div>
+    );
 }
+
+export default Dashboard;
