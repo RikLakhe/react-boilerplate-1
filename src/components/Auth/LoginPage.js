@@ -1,85 +1,65 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { Alert } from 'react-bootstrap';
-import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdbreact';
-import { AuthConsumer, withContext } from './../Layout/Header/AuthContext';
-import { isEmpty } from '../../utils/commonUtil';
-import axios from "axios";
+import React, {useState} from 'react';
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import {Alert} from 'react-bootstrap';
+import {MDBContainer, MDBRow, MDBCol, MDBBtn} from 'mdbreact';
+import {AuthConsumer, withContext} from './../Layout/Header/AuthContext';
+import {isEmpty} from '../../utils/commonUtil';
 
-const loginSchema = Yup.object().shape({
-    email: Yup.string()
-        .email('E-mail is not valid')
-        .max(50, 'E-mail must be less than 50 characters')
-        .required('E-mail is required'),
-    password: Yup.string()
-        .required('Password is required'),
-});
+const LoginPage = props => {
+    const [errorMessage, setErrorMessage] = useState();
 
-class LoginPage extends Component {
+    return (
+        <AuthConsumer>
+            {({loginError}) => (
+                <MDBContainer className='mt-5 pt-5 d-flex justify-content-center align-items-center'>
+                    <div>
+                        <h1>Login Page</h1>
 
-    state = {
-        errorMessage: '',
-    };
+                        <Formik
+                            initialValues={{email: '', password: ''}}
+                            validate={values => {
+                                let errors = {};
+                                if (!values.email) {
+                                    errors.email = 'Required';
+                                } else if (
+                                    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                                ) {
+                                    errors.email = 'Invalid email address';
+                                }
+                                return errors;
+                            }}
+                            onSubmit={values => {
+                                props.login(values).then((response) => {
+                                    this.props.history.push('/dashboard');
+                                })
+                                    .catch(error => {
+                                        setErrorMessage(error.response.data.data);
+                                    });
 
-    render() {
-
-        const errorMessage = this.state.errorMessage;
-        return (
-            <AuthConsumer>
-                {({ loginError }) => (
-                    <MDBContainer className='mt-5 pt-5 d-flex justify-content-center align-items-center'>
-                        <div>
-                            <h1>Login Page</h1>
-
-                            <Formik
-                                initialValues={{ email: '', password: '' }}
-                                validate={values => {
-                                    let errors = {};
-                                    if (!values.email) {
-                                        errors.email = 'Required';
-                                    } else if (
-                                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-                                    ) {
-                                        errors.email = 'Invalid email address';
-                                    }
-                                    return errors;
-                                }}
-                                onSubmit={values => {
-                                    this.props.login(values).then((response) => {
-                                            this.props.history.push('/dashboard');
-                                    })
-                                        .catch(error => {
-                                            this.setState({ errorMessage: error.response.data.data });
-                                        });
-
-                                }}
-                            >
-                                {({ isSubmitting }) => (
-                                    <Form>
-                                        {!isEmpty(errorMessage) &&
-                                        <Alert variant="danger">
-                                            {errorMessage &&
-                                            <div className="text-center">
-                                                <h5>Login Failed. Please Try Again</h5>
-                                            </div>}
-                                        </Alert>}
-                                        <Field type="text" name="email" />
-                                        <ErrorMessage name="email" component="div" />
-                                        <Field type="password" name="password" />
-                                        <ErrorMessage name="password" component="div" />
-                                        <MDBBtn color="indigo" type="submit" >Login</MDBBtn>
-                                    </Form>
-                                )}
-                            </Formik>
-                        </div>
-                    </MDBContainer>
-                )}
-            </AuthConsumer>
-
-        );
-    }
+                            }}
+                        >
+                            {({isSubmitting}) => (
+                                <Form>
+                                    {!isEmpty(errorMessage) &&
+                                    <Alert variant="danger">
+                                        {errorMessage &&
+                                        <div className="text-center">
+                                            <h5>Login Failed. Please Try Again</h5>
+                                        </div>}
+                                    </Alert>}
+                                    <Field type="text" name="email"/>
+                                    <ErrorMessage name="email" component="div"/>
+                                    <Field type="password" name="password"/>
+                                    <ErrorMessage name="password" component="div"/>
+                                    <MDBBtn color="indigo" type="submit">Login</MDBBtn>
+                                </Form>
+                            )}
+                        </Formik>
+                    </div>
+                </MDBContainer>
+            )}
+        </AuthConsumer>
+    );
 }
 
 export default withContext(LoginPage);

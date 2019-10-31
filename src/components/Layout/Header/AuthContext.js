@@ -18,9 +18,9 @@ class AuthProvider extends Component {
         isAuthenticated: isAuthenticated() || false,
     };
 
-    login = ({ email, password }) => {
-        return axios.post(`https://dev.citytech.global:1443/customers/v1/login`, { email, password }).then((response) => {
-            this.setState({ isAuthenticated: true, user: response.data.data });
+    login = ({email, password}) => {
+        return axios.post(`https://dev.citytech.global:1443/customers/v1/login`, {email, password}).then((response) => {
+            this.setState({isAuthenticated: true, user: response.data.data});
             return response;
         })
     };
